@@ -1,0 +1,30 @@
+// polygon made from points
+class Polygon {
+    constructor(polygonPoints) {
+        this.pointsOfPolygon = polygonPoints;
+    }
+
+    //check to see if point is located inside
+    isPointInside(point){
+        var x = point[0], y = point[1];
+        
+            var insideResult = false;
+            for (var i = 0, j = this.pointsOfPolygon.length - 1; i < this.pointsOfPolygon.length; j = i++) {
+                var xi = this.pointsOfPolygon[i][0], yi = this.pointsOfPolygon[i][1];
+                var xj = this.pointsOfPolygon[j][0], yj = this.pointsOfPolygon[j][1];
+        
+                var intersect = ((yi > y) != (yj > y))
+                    && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    
+                if (intersect){
+                    insideResult = true;
+                }
+            }
+        
+            return insideResult;
+    }
+}
+
+var polygon = new Polygon([ [ 1, 1 ], [ 1, 2 ], [ 2, 2 ], [ 2, 1 ] ]);
+result = polygon.isPointInside([ 1.5, 1.5 ])
+console.log(result); 
