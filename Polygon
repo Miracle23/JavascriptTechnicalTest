@@ -1,4 +1,4 @@
-// polygon made from points
+// polygon made from points with ability to check if a location specified is inside
 class Polygon {
     constructor(polygonPoints) {
         this.pointsOfPolygon = polygonPoints;
