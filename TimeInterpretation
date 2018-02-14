@@ -1,0 +1,93 @@
+// Rate between 2 dates and the amount payed during this time
+class Rate {
+    constructor(name, hourlyRate, start, end) {
+        this.name = name;
+        this.hourlyRate = hourlyRate;
+        this.start = start;
+        this.end = end;
+    }
+}
+
+// A shift a worker has completed and a function to calculate the shifts rate breakdown
+class Shift {
+    constructor(worker, start, end) {
+        this.start = start;
+        this.end = end;
+        this.worker = worker;
+    }
+
+    // a calculation breakdown of all rates within the shift
+    shiftCalculationBreakdown(rates) {
+        var ratesSummary = [];
+        var workerId = this.worker;
+        var startTime = this.start;
+        var endTime = this.end;
+        var totalWorkTime = Math.abs(endTime - startTime) / 36e5;
+        var totalShiftHours = 0;
+        rates.forEach(function (rate) {
+            var description = rate.name;
+            var totalHours;
+            // rate.start == null for default
+            if (rate.start != null) {
+                if ((startTime.getHours() <= rate.start) || (startTime.getHours() >= rate.end)) {
+                    startTime.setHours(rate.start);
+                }
+                if ((endTime.getHours() >= rate.end) || (endTime.getHours() <= rate.start)) {
+                    endTime.setHours(rate.end);
+                }
+                totalHours = Math.abs(endTime - startTime) / 36e5
+                ratesSummary.push({
+                    "WorkerId": workerId,
+                    "RateName": description,
+                    "TotalWorkTime": totalHours,
+                    "totalPay": rate.hourlyRate * totalHours,
+                })
+                totalShiftHours = totalShiftHours + totalHours;
+            }
+            else {
+                var defaultWork = totalShiftHours - totalWorkTime
+                ratesSummary.push({
+                    "WorkerId": workerId,
+                    "RateName": description,
+                    "TotalWorkTime": defaultWork,
+                    "totalPay": rate.hourlyRate * defaultWork,
+                })
+
+            }
+        });
+        return ratesSummary;
+    }
+}
+
+var firstShift = new Shift("John", new Date("2017-06-23 09:00"), new Date("2017-06-23 17:00"));
+var secondShift = new Shift("John", new Date("2017-06-23 09:00"), new Date("2017-06-23 17:00"));
+var shifts = [firstShift, secondShift];
+
+var morningRate = new Rate("Morning", 15, new Date(2018, 01, 01, 05, 0, 0, 0).getHours(), new Date(2018, 01, 01, 10, 0, 0, 0).getHours());
+var eveningRate = new Rate("Evening", 18, new Date(2018, 01, 01, 16, 30, 0, 0).getHours(), new Date(2018, 01, 01, 20, 0, 0, 0).getHours());
+var nightRate = new Rate("Night", 20, new Date(2018, 03, 01, 16, 30, 0, 0).getHours(), new Date(2018, 01, 01, 20, 0, 0, 0).getHours());
+var defaultRate = new Rate("Default", 10, null, null);
+var rates = [morningRate, eveningRate, nightRate, defaultRate];
+
+class CalculateBreakdown {
+    constructor(shifts, rates) {
+        this.shifts = shifts;
+        this.rates = rates;
+    };
+
+    calculate() {
+        var result;
+        rates = this.rates;
+
+        this.shifts.forEach(function (shift) {
+            result = shift.shiftCalculationBreakdown(rates)
+        });
+
+        return result;
+
+    };
+
+}
+
+var ratesCalculation = new CalculateBreakdown(shifts, rates);
+console.log(ratesCalculation.calculate());
