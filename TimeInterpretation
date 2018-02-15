@@ -1,4 +1,6 @@
-// Rate between 2 dates and the amount payed during this time
+/* 
+    A Rate class, which just contains the name, hourly rate, start and end times for the rate.
+*/
 class Rate {
     constructor(name, hourlyRate, start, end) {
         this.name = name;
@@ -8,7 +10,10 @@ class Rate {
     }
 }
 
-// A shift a worker has completed and a function to calculate the shifts rate breakdown
+/* 
+    A shift a worker has completed containing workerId, start and end times
+    this class also has a function to calculate the shifts rate breakdown
+*/
 class Shift {
     constructor(worker, start, end) {
         this.start = start;
@@ -16,7 +21,12 @@ class Shift {
         this.worker = worker;
     }
 
-    // a calculation breakdown of all rates within the shift
+     /* 
+        A calculation breakdown of all rates within the shift,
+        this will loop through all rates passed in for the shift, 
+        checking which hours fall within each rate band before adding a summorisation 
+        of hours worked and payment at that rate to to the rate summary breakdown 
+    */
     shiftCalculationBreakdown(rates) {
         var ratesSummary = [];
         var workerId = this.worker;
@@ -27,8 +37,12 @@ class Shift {
         rates.forEach(function (rate) {
             var description = rate.name;
             var totalHours;
-            // rate.start == null for default
+            
+            // A check if rate.start == null for default rate, additional checking would have been beneficial 
+            // incase of miss-entry  of just start date 
             if (rate.start != null) {
+            
+                // Check which hours fall within the rate and push to array a ratesummarybreakdown entry
                 if ((startTime.getHours() <= rate.start) || (startTime.getHours() >= rate.end)) {
                     startTime.setHours(rate.start);
                 }
@@ -45,6 +59,7 @@ class Shift {
                 totalShiftHours = totalShiftHours + totalHours;
             }
             else {
+                // For a default Rate calculate remaining hours and create a ratesummarybreakdown entry
                 var defaultWork = totalShiftHours - totalWorkTime
                 ratesSummary.push({
                     "WorkerId": workerId,
@@ -59,22 +74,26 @@ class Shift {
     }
 }
 
+// ENTRY: Create 2 shifts and place in array
 var firstShift = new Shift("John", new Date("2017-06-23 09:00"), new Date("2017-06-23 17:00"));
 var secondShift = new Shift("John", new Date("2017-06-23 09:00"), new Date("2017-06-23 17:00"));
 var shifts = [firstShift, secondShift];
 
+// Entry: Create the 4 given shifts and place in Array
 var morningRate = new Rate("Morning", 15, new Date(2018, 01, 01, 05, 0, 0, 0).getHours(), new Date(2018, 01, 01, 10, 0, 0, 0).getHours());
 var eveningRate = new Rate("Evening", 18, new Date(2018, 01, 01, 16, 30, 0, 0).getHours(), new Date(2018, 01, 01, 20, 0, 0, 0).getHours());
 var nightRate = new Rate("Night", 20, new Date(2018, 03, 01, 16, 30, 0, 0).getHours(), new Date(2018, 01, 01, 20, 0, 0, 0).getHours());
 var defaultRate = new Rate("Default", 10, null, null);
 var rates = [morningRate, eveningRate, nightRate, defaultRate];
 
+// Breakdown Calculation class containing both the shifts and rates
 class CalculateBreakdown {
     constructor(shifts, rates) {
         this.shifts = shifts;
         this.rates = rates;
     };
 
+    // Calculates the breakdown by looping through shifts and calling for the breakdown based on the rates
     calculate() {
         var result;
         rates = this.rates;
@@ -89,5 +108,6 @@ class CalculateBreakdown {
 
 }
 
+// Run the breakdown and output to console
 var ratesCalculation = new CalculateBreakdown(shifts, rates);
 console.log(ratesCalculation.calculate());
