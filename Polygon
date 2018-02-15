@@ -1,18 +1,35 @@
-// polygon made from points with ability to check if a location specified is inside
+// A polygon containing all the lines created from a point in the list to the next point, and from the last point to the fist point.
+// also contains a check to see if a point specified is located within the polygon
 class Polygon {
     constructor(polygonPoints) {
         this.pointsOfPolygon = polygonPoints;
     }
 
-    //check to see if point is located inside
+    
+    /* 
+     A check to see if a given point is within the polygon.
+     using a loop through points in the polygon and checking if any points intersect.
+    */
     isPointInside(point){
+        // Extract out point into into an x and y axis.
         var x = point[0], y = point[1];
         
             var insideResult = false;
+            
+            // For each point in polygon check each available position
             for (var i = 0, j = this.pointsOfPolygon.length - 1; i < this.pointsOfPolygon.length; j = i++) {
+            
+                // assign values to of coordinates to 2 x and y axis groups 
+                // (these will represent a line drawn between the 2 points in the polygon (the boundary)
                 var xi = this.pointsOfPolygon[i][0], yi = this.pointsOfPolygon[i][1];
                 var xj = this.pointsOfPolygon[j][0], yj = this.pointsOfPolygon[j][1];
         
+                /*  
+                    Uses known Ray Casting algorithm, according to which, to find if a point is within or a polygon or not
+                    is done by creating a line from the point in any fixed direction which intersects the edges of the polygon.
+                    If the number of intersection of the edges is odd then the point is inside the polygon
+                    and if the number of intersection is even then the point is outside the polygon
+                 */
                 var intersect = ((yi > y) != (yj > y))
                     && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
                     
@@ -25,6 +42,7 @@ class Polygon {
     }
 }
 
+// Run the polygon inside check on specified polygon and output to console.
 var polygon = new Polygon([ [ 1, 1 ], [ 1, 2 ], [ 2, 2 ], [ 2, 1 ] ]);
 result = polygon.isPointInside([ 1.5, 1.5 ])
 console.log(result); 
