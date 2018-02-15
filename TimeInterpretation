@@ -24,8 +24,10 @@ class Shift {
      /* 
         A calculation breakdown of all rates within the shift,
         this will loop through all rates passed in for the shift, 
-        checking which hours fall within each rate band before adding a summorisation 
+        checking which hours fall within each rate band before adding a summarization 
         of hours worked and payment at that rate to to the rate summary breakdown 
+        
+        TODO: Needs to be changed to check time so hours and minutes are included
     */
     shiftCalculationBreakdown(rates) {
         var ratesSummary = [];
@@ -79,7 +81,7 @@ var firstShift = new Shift("John", new Date("2017-06-23 09:00"), new Date("2017-
 var secondShift = new Shift("John", new Date("2017-06-23 09:00"), new Date("2017-06-23 17:00"));
 var shifts = [firstShift, secondShift];
 
-// Entry: Create the 4 given shifts and place in Array
+// ENTRY: Create the 4 given shifts and place in Array
 var morningRate = new Rate("Morning", 15, new Date(2018, 01, 01, 05, 0, 0, 0).getHours(), new Date(2018, 01, 01, 10, 0, 0, 0).getHours());
 var eveningRate = new Rate("Evening", 18, new Date(2018, 01, 01, 16, 30, 0, 0).getHours(), new Date(2018, 01, 01, 20, 0, 0, 0).getHours());
 var nightRate = new Rate("Night", 20, new Date(2018, 03, 01, 16, 30, 0, 0).getHours(), new Date(2018, 01, 01, 20, 0, 0, 0).getHours());
